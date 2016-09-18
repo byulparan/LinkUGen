@@ -13,6 +13,7 @@ all: $(TARGET)
 
 $(TARGET) : $(OBJS)
 	clang++ -bundle -o$(TARGET) $(OBJS)
+	mv $(TARGET) ./LinkUGen
 
 clean :
 	rm $(TARGET) $(OBJS)

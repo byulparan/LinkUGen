@@ -18,5 +18,7 @@ You should be clone to repository of SuperCollider3 / Link.
     $ cd "/path/to/LinkUGen"
     $ export SC3_SRC="/PATH/TO/SuerColliderSourceDirectory"
     $ export LINK_SRC="/PATH/TO/LinkSourceDirectory"
-    $ make
+    $ make	
 ```
+
+after build, you should be move "LinkUGen(include Classes, Link.scx)" to SuperCollider Extension direcotry.
