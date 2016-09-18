@@ -3,6 +3,12 @@ Ableton Link compatiable UGen for SuperCollider.
 
 live coding demo: <https://youtu.be/A_4OC4C7Ptk>  
 
+### download pre-build binary
+
+If your machine is OSX or Linux(i386), then you could download this library.
+
+- [download](https://dl.dropboxusercontent.com/u/23310809/LinkUGen.zip)
+
 ### Build Require:
 
 You need dependency libraries for build to LinkUGen.  
