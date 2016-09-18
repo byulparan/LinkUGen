@@ -107,7 +107,7 @@ void LinkTempo_next(LinkTempo* unit, int inNumSamples) {
   }
 }
 
-PluginLoad(AudioUnit) {
+PluginLoad(Link) {
   ft = inTable;
   DefineSimpleUnit(LinkStatus);
   DefineSimpleUnit(Link);
