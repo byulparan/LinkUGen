@@ -7,24 +7,27 @@ endif
 
 
 UNAME :=$(shell uname)
+
 ifeq ($(UNAME), Darwin)
-CXX=clang++
 CXXLDFLAGS=-bundle
+TARGET=Link.scx
 PLATFORM=LINK_PLATFORM_MACOSX
+
 else ifeq ($(UNAME), Linux)
-CXX=g++
+TARGET=Link.so
 CXXLDFLAGS=-shared
 PLATFORM=LINK_PLATFORM_LINUX
 endif
 
-TARGET=Link.scx
+
 OBJS=Link.o
+
 CXXFLAGS=-I$(SC3_SRC)/include/plugin_interface/ -I$(SC3_SRC)/include/common -I$(LINK_SRC)/include/ -I$(LINK_SRC)/modules/asio-standalone/asio/include -std=c++11 -D$(PLATFORM)
 
 all: $(TARGET)
 
 $(TARGET) : $(OBJS)
-	clang++ $(CXXLDFLAGS) -o$(TARGET) $(OBJS)
+	$(CXX) $(CXXLDFLAGS) -o$(TARGET) $(OBJS)
 	mv $(TARGET) ./LinkUGen
 
 clean :
