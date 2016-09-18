@@ -11,6 +11,9 @@ If your machine is OSX or Linux(i386), then you could download this library.
 
 ### Build Require:
 
+Currently, It only support OSX and Linux. I don't have Window machine,   
+so If you have Window programming skill, plz report Window build phase.  
+
 You need dependency libraries for build to LinkUGen.  
 You should be clone to repository of SuperCollider3 / Link.  
 
