@@ -18,6 +18,7 @@ You should be clone to repository of SuperCollider3 / Link.
     $ cd "/path/to/LinkUGen"
     $ export SC3_SRC="/PATH/TO/SuerColliderSourceDirectory"
     $ export LINK_SRC="/PATH/TO/LinkSourceDirectory"
+	$ export CXX="without OSX. set your C++ compiler. I recommend clang++ higher than 3.6. I build fail g++ on Linux"
     $ make	
 ```
 
