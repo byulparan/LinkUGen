@@ -10,14 +10,16 @@ UNAME :=$(shell uname)
 ifeq ($(UNAME), Darwin)
 CXX=clang++
 CXXLDFLAGS=-bundle
+PLATFORM=LINK_PLATFORM_MACOSX
 else ifeq ($(UNAME), Linux)
 CXX=g++
 CXXLDFLAGS=-shared
+PLATFORM=LINK_PLATFORM_LINUX
 endif
 
 TARGET=Link.scx
 OBJS=Link.o
-CXXFLAGS=-I$(SC3_SRC)/include/plugin_interface/ -I$(SC3_SRC)/include/common -I$(LINK_SRC)/include/ -I$(LINK_SRC)/modules/asio-standalone/asio/include -std=c++1y -DLINK_PLATFORM_MACOSX
+CXXFLAGS=-I$(SC3_SRC)/include/plugin_interface/ -I$(SC3_SRC)/include/common -I$(LINK_SRC)/include/ -I$(LINK_SRC)/modules/asio-standalone/asio/include -std=c++11 -D$(PLATFORM)
 
 all: $(TARGET)
 
