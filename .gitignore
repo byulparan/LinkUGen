@@ -4,7 +4,7 @@
 *.o
 *.lisp
 *.me
-Makefile
 *.cmake
+Makefile
 CMakeCache.txt
 CMakeFiles
