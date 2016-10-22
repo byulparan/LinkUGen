@@ -1,21 +1,36 @@
-#include "SC_PlugIn.h"
+
 #include <ableton/Link.hpp>
 #include <chrono>
-#include <pthread.h>
+#include <thread>
+#include <atomic>
+#include "SC_Unit.h"
+#include "SC_PlugIn.h"
 
 static InterfaceTable *ft;
 
-static ableton::Link *gLink = NULL;
+static ableton::Link *gLink = nullptr;
 static float gTempo = 60.0;
+std::thread  gThread;
+std::atomic<bool> gContinueRunningThread(true);
+
+/**
+The mutex should be used to modify the thread continuation function, but since
+we're using an atomic bool, it is not really needed (except for the cond var)
+*/
+std::mutex gThreadMutex;
+std::condition_variable gThreadCond;
 
 void* make_link_callback(void* inTempo) {
   ableton::Link link(gTempo);
   link.enable(true);
   gLink = &link;
-  while(1) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::unique_lock<std::mutex> lock(gThreadMutex); // mutex scope lock
+  while (gContinueRunningThread.load()) {
+      // this releases lock
+      gThreadCond.wait(lock);
   }
-  return (void*) NULL;
+  gLink = nullptr;
+  return nullptr;
 }
 
 struct LinkStatus : public Unit {
@@ -27,19 +42,35 @@ extern "C" {
   void LinkStatus_next(LinkStatus* unit, int inNumSamples);
 }
 
+void LinkStatus_next(LinkStatus* unit, int inNumSamples) {
+}
 
 void LinkStatus_Ctor(LinkStatus* unit) {
-  if (!gLink) {
-    pthread_t thread;
-    gTempo = *IN(0);
-    pthread_create(&thread, NULL, make_link_callback, (void*)NULL);
-  }
-  SETCALC(LinkStatus_next);
+    if (!gLink) {
+        gTempo = *IN(0);
+        gThread = std::thread(make_link_callback, nullptr);
+    }
+    SETCALC(LinkStatus_next);
 }
 
-void LinkStatus_next(LinkStatus* unit, int inNumSamples) {
+struct LinkDisabler : public Unit {
 
+};
+
+extern "C" {
+    void LinkDisabler_Ctor(LinkDisabler* unit);
+    void LinkDisabler_next(LinkDisabler* unit, int inNumSamples);
 }
+
+void LinkDisabler_Ctor(LinkStatus* unit) {
+    gContinueRunningThread.store(false);
+    gThreadCond.notify_one();
+    SETCALC(LinkStatus_next);
+}
+
+void LinkDisabler_next(LinkStatus* unit, int inNumSamples) {
+}
+
 
 
 struct Link : public Unit {
@@ -66,7 +97,7 @@ void Link_next(Link* unit, int inNumSamples) {
     const auto time = gLink->clock().micros();
     auto timeline = gLink->captureAudioTimeline();
     const auto beats = timeline.beatAtTime(time, 4);
-    *output =  beats;
+    *output =  static_cast<float>(beats);
   }
 }
 
@@ -107,7 +138,7 @@ void LinkTempo_next(LinkTempo* unit, int inNumSamples) {
   }
 }
 
-PluginLoad(Link) {
+PluginLoad(AudioUnit) {
   ft = inTable;
   DefineSimpleUnit(LinkStatus);
   DefineSimpleUnit(Link);
