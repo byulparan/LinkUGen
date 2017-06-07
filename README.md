@@ -11,7 +11,7 @@ Benjamin Golinvaux <benjamin@golinvaux.com>
 
 It include OSX / Linux(i386) / Windows(x64/x86) pre-built binaries.
 
-- [download](https://dl.dropboxusercontent.com/u/23310809/LinkUGen.zip)
+- [download](https://drive.google.com/open?id=0B1v2sD-v9y_4SnBzQWkweWp1Q00)
 
 ### Build Require:
 
