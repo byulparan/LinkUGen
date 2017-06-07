@@ -62,9 +62,10 @@ extern "C" {
     void LinkDisabler_next(LinkDisabler* unit, int inNumSamples);
 }
 
-void LinkDisabler_Ctor(LinkStatus* unit) {
+void LinkDisabler_Ctor(LinkDisabler* unit) {
     gContinueRunningThread.store(false);
     gThreadCond.notify_one();
+    gThread.join();
     SETCALC(LinkStatus_next);
 }
 
@@ -138,9 +139,10 @@ void LinkTempo_next(LinkTempo* unit, int inNumSamples) {
   }
 }
 
-PluginLoad(AudioUnit) {
+PluginLoad(Link) {
   ft = inTable;
   DefineSimpleUnit(LinkStatus);
+  DefineSimpleUnit(LinkDisabler);
   DefineSimpleUnit(Link);
   DefineSimpleUnit(LinkTempo);
 }
