@@ -9,15 +9,13 @@ Benjamin Golinvaux <benjamin@golinvaux.com>
 
 ### Download pre-built binaries
 
-It include OSX / Linux(i386) / Windows(x64/x86) pre-built binaries.
+It include OSX / Linux(i386) / Windows(x64/x86) pre-built binaries.  
 
 - [download](https://drive.google.com/open?id=0B1v2sD-v9y_4SnBzQWkweWp1Q00)
 
-### Build Require:
+### Build Required:
 
 - [CMake](https://cmake.org)
-- [Boost](http://www.boost.org)
-- The Asio package (at least in ArchLinux)
 
 LinkUGen has some dependencies.
 You need to download (or clone) the SuperCollider3 and Link sources:  
@@ -36,4 +34,4 @@ You need to download (or clone) the SuperCollider3 and Link sources:
     $ make
 ```
 
-after building, you should be move "LinkUGen(include Classes, Link.scx)" to the SuperCollider Extension directory.
+after building, you should be move "LinkUGen(include Classes, 'Link.scx' or 'Link.so')" to the SuperCollider Extension directory.
