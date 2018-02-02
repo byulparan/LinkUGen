@@ -9,9 +9,7 @@ Benjamin Golinvaux <benjamin@golinvaux.com>
 
 ### Download pre-built binaries
 
-It include OSX / Linux(i386) / Windows(x64/x86) pre-built binaries.  
-
-- [download](https://drive.google.com/open?id=0B1v2sD-v9y_4SnBzQWkweWp1Q00)
+**currently, not provide pre-built version. I will update this, as soon as possible.**
 
 ### Build Required:
 
