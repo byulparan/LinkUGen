@@ -20,15 +20,15 @@ Link : UGen {
 			FreeSelf.kr(1);
 		}
 	}
-	
+
 	*kr {
 		^this.multiNew('control');
 	}
-	
+
 	*quantum {
 		^96;
 	}
-	
+
 	*setTempo { arg tempo, lagTime = 0.0;
 		play{
 			LinkTempo.kr(tempo, Line.kr(0, 1, lagTime, doneAction: 2));
@@ -49,7 +49,8 @@ LinkCount : UGen {
 
 LinkTrig : UGen {
 	*kr { arg division = 1;
-		^Changed.kr(LinkCount.kr(division));
+		var count = LinkCount.kr(division);
+		^Changed.kr(count - Latch.kr(count,1));
 	}
 }
 
@@ -58,7 +59,7 @@ LinkLane : UGen {
 	*kr { arg div = 1, max = 4, lane = [];
 		^Mix(lane.collect({|item|
 			var isEq = (LinkCount.kr(div) % max eq: item);
-			Changed.kr(isEq) * isEq;			
+			Changed.kr(isEq) * isEq;
 		}));
 	}
 }
