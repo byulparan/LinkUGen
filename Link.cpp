@@ -96,7 +96,7 @@ void Link_next(Link* unit, int inNumSamples) {
   *output = 0.0;
   if (gLink) {
     const auto time = gLink->clock().micros();
-    auto timeline = gLink->captureAudioTimeline();
+    auto timeline = gLink->captureAudioSessionState();
     const auto beats = timeline.beatAtTime(time, 4);
     *output =  static_cast<float>(beats);
   }
@@ -124,7 +124,7 @@ void LinkTempo_Ctor(LinkTempo* unit) {
   }
   
   if (gLink && unit->mRunning) {
-    const auto timeline = gLink->captureAudioTimeline();
+    const auto timeline = gLink->captureAudioSessionState();
     unit->mCurTempo = timeline.tempo();
     unit->mTempoCalc = unit->mCurTempo - *IN(0);
   }
@@ -133,9 +133,9 @@ void LinkTempo_Ctor(LinkTempo* unit) {
 
 void LinkTempo_next(LinkTempo* unit, int inNumSamples) {
   if (gLink && unit->mRunning) {
-    auto timeline = gLink->captureAudioTimeline();
+    auto timeline = gLink->captureAudioSessionState();
     timeline.setTempo(unit->mCurTempo - (*IN(1) * unit->mTempoCalc), gLink->clock().micros());
-    gLink->commitAudioTimeline(timeline);
+    gLink->commitAudioSessionState(timeline);
   }
 }
 
