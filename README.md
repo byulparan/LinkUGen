@@ -9,7 +9,7 @@ Benjamin Golinvaux <benjamin@golinvaux.com>
 
 ### Download pre-built binaries
 It include MacOS / Linux(Ubuntu AMD64) / Windows_x86/x64.   
-- [LinkUGen build at 2018.07.25](https://drive.google.com/open?id=1URIM91y0ONabYTF4Moo3xYaFShK-2HjA)
+- [LinkUGen build at 2018.07.25](https://www.dropbox.com/s/l6cthmg555od4gk/LinkUGen.zip?dl=0)
 
 ### Build Required:
 
