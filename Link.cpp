@@ -11,7 +11,7 @@ static InterfaceTable *ft;
 static ableton::Link *gLink = nullptr;
 static float gTempo = 60.0;
 std::thread  gThread;
-std::atomic<bool> gContinueRunningThread(true);
+std::atomic<bool> gContinueRunningThread(false);
 
 /**
 The mutex should be used to modify the thread continuation function, but since
@@ -109,7 +109,6 @@ void Link_next(Link* unit, int inNumSamples) {
 struct LinkTempo : public Unit {
   double mCurTempo;
   double mTempoCalc;
-  bool mRunning;
 };
 
 extern "C" {
@@ -119,14 +118,12 @@ extern "C" {
 
 
 void LinkTempo_Ctor(LinkTempo* unit) {
-  unit->mRunning = true;
 
   if (!gLink) {
     Print("Link not enabled! can't set Link Tempo!\n");
-    unit->mRunning = false;
   }
   
-  if (gLink && unit->mRunning) {
+  if (gLink) {
     const auto timeline = gLink->captureAudioSessionState();
     unit->mCurTempo = timeline.tempo();
     unit->mTempoCalc = unit->mCurTempo - *IN(0);
@@ -135,7 +132,7 @@ void LinkTempo_Ctor(LinkTempo* unit) {
 }
 
 void LinkTempo_next(LinkTempo* unit, int inNumSamples) {
-  if (gLink && unit->mRunning) {
+  if (gLink) {
     auto timeline = gLink->captureAudioSessionState();
     timeline.setTempo(unit->mCurTempo - (*IN(1) * unit->mTempoCalc), gLink->clock().micros());
     gLink->commitAudioSessionState(timeline);
