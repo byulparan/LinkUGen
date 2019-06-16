@@ -46,11 +46,12 @@ void LinkStatus_next(LinkStatus* unit, int inNumSamples) {
 }
 
 void LinkStatus_Ctor(LinkStatus* unit) {
-    if (!gLink) {
-        gTempo = *IN(0);
-        gThread = std::thread(make_link_callback, nullptr);
-    }
-    SETCALC(LinkStatus_next);
+  if (!gLink) {
+    gContinueRunningThread.store(true);
+    gTempo = *IN(0);
+    gThread = std::thread(make_link_callback, nullptr);
+  }
+  SETCALC(LinkStatus_next);
 }
 
 struct LinkDisabler : public Unit {
@@ -63,10 +64,12 @@ extern "C" {
 }
 
 void LinkDisabler_Ctor(LinkDisabler* unit) {
+  if (gContinueRunningThread.load()) {
     gContinueRunningThread.store(false);
     gThreadCond.notify_one();
     gThread.join();
-    SETCALC(LinkStatus_next);
+  }
+  SETCALC(LinkStatus_next);
 }
 
 void LinkDisabler_next(LinkStatus* unit, int inNumSamples) {
