@@ -10,20 +10,25 @@ static InterfaceTable *ft;
 
 static ableton::Link *gLink = nullptr;
 static float gTempo = 60.0;
-std::thread  gThread;
-std::atomic<bool> gContinueRunningThread(false);
+static std::thread  gThread;
+static std::atomic<bool> gContinueRunningThread(false);
 
 /**
 The mutex should be used to modify the thread continuation function, but since
 we're using an atomic bool, it is not really needed (except for the cond var)
 */
-std::mutex gThreadMutex;
-std::condition_variable gThreadCond;
+static std::mutex gThreadMutex;
+static std::condition_variable gThreadCond;
+
+
+static long gDiff = 0;
 
 void* make_link_callback(void* inTempo) {
   ableton::Link link(gTempo);
   link.enable(true);
   gLink = &link;
+
+  
   std::unique_lock<std::mutex> lock(gThreadMutex); // mutex scope lock
   while (gContinueRunningThread.load()) {
       // this releases lock
@@ -32,6 +37,55 @@ void* make_link_callback(void* inTempo) {
   gLink = nullptr;
   return nullptr;
 }
+
+extern "C" {
+  double GetLinkBeat();
+  double GetLinkBeatToTime(double beat);
+  void SyncUnixTimeWithLink();
+  float GetLinkTempo();
+}
+
+void SyncUnixTimeWithLink() {
+  unsigned long diff = 0;
+  for(int i = 0; i < 10; i++) {
+    const auto time = gLink->clock().micros();
+    unsigned long since_epoch = std::chrono::duration_cast<std::chrono::microseconds>
+      (std::chrono::system_clock::now().time_since_epoch()).count() - 0;
+    diff += since_epoch - time.count();
+  }
+  gDiff = diff / 10;
+}
+
+double GetLinkBeat() {
+  double output = 0.0;
+  if (gLink) {
+    const auto time = gLink->clock().micros();
+    auto timeline = gLink->captureAudioSessionState();
+    const auto beats = timeline.beatAtTime(time, 4);
+    output =  beats;
+  }
+  return output;
+}
+
+double GetLinkBeatToTime(double beat) {
+  double output = 0.0;
+  if (gLink) {
+    auto timeline = gLink->captureAudioSessionState();
+    auto time = timeline.timeAtBeat(beat, 4);
+    output = (time.count() + gDiff) * 1e-6;
+  }
+  return output;
+}
+
+float GetLinkTempo() {
+  float output = 0.0;
+  if (gLink) {
+    auto timeline = gLink->captureAudioSessionState();
+    output = static_cast<float>(timeline.tempo());
+  }
+  return output;
+}
+
 
 struct LinkStatus : public Unit {
 
