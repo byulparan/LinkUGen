@@ -4,7 +4,7 @@ Ableton Link compatible UGen for SuperCollider.
 live coding demo: <https://youtu.be/A_4OC4C7Ptk>  
 
 ### AuthorList
-ParkSungmin <byulparan@icloud.com>  
+ParkSungmin <byulparan@gmail.com>  
 Benjamin Golinvaux <benjamin@golinvaux.com>  
 
 ### Download pre-built binaries
